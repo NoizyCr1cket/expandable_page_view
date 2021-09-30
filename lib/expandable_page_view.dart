@@ -98,11 +98,27 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 
   @override
   void initState() {
-    _heights = _prepareHeights();
     super.initState();
+    _heights = _prepareHeights();
     _pageController = widget.controller ?? PageController();
     _pageController.addListener(_updatePage);
     _shouldDisposePageController = widget.controller == null;
+  }
+
+  @override
+  void didUpdateWidget(covariant ExpandablePageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?.removeListener(_updatePage);
+      _pageController = widget.controller ?? PageController();
+      _pageController.addListener(_updatePage);
+      _shouldDisposePageController = widget.controller == null;
+    }
+    if (_shouldReinitializeHeights(oldWidget)) {
+      final currentPageHeight = _heights[_currentPage];
+      _heights = _prepareHeights();
+      _heights[_currentPage] = currentPageHeight;
+    }
   }
 
   @override
@@ -112,6 +128,13 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       _pageController.dispose();
     }
     super.dispose();
+  }
+
+  bool _shouldReinitializeHeights(ExpandablePageView oldWidget) {
+    if (oldWidget.itemBuilder != null && isBuilder) {
+      return oldWidget.itemCount != widget.itemCount;
+    }
+    return oldWidget.children?.length != widget.children?.length;
   }
 
   @override
@@ -185,7 +208,8 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
   Widget _itemBuilder(BuildContext context, int index) {
     final item = widget.itemBuilder(context, index);
     return OverflowPage(
-      onSizeChange: (size) => setState(() => _heights[index] = size?.height ?? 0),
+      onSizeChange: (size) =>
+          setState(() => _heights[index] = size?.height ?? 0),
       child: item,
     );
   }
@@ -196,7 +220,8 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
         (index, child) => MapEntry(
           index,
           OverflowPage(
-            onSizeChange: (size) => setState(() => _heights[index] = size?.height ?? 0),
+            onSizeChange: (size) =>
+                setState(() => _heights[index] = size?.height ?? 0),
             child: child,
           ),
         ),
