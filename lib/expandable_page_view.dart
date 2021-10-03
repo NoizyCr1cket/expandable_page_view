@@ -122,6 +122,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
 
       if (_currentPage >= _heights.length) {
         _currentPage--;
+        _previousPage--;
       }
 
       _heights[_currentPage] = currentPageHeight;
