@@ -123,7 +123,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       // _prepareHeights may change the _heights list size, resulting in a
       // RangeError when dropping the last item on the list. This protects
       // against that possible error
-      if (_currentPage >= widget.itemCount) {
+      if (widget.itemCount != null && _currentPage >= widget.itemCount!) {
         _heights[widget.itemCount - 1] = currentPageHeight;
       } else {
         _heights[_currentPage] = currentPageHeight;
