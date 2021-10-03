@@ -117,6 +117,7 @@ class _ExpandablePageViewState extends State<ExpandablePageView> {
       _shouldDisposePageController = widget.controller == null;
     }
     if (_shouldReinitializeHeights(oldWidget)) {
+      _previousPage = 0;
       final currentPageHeight = _heights[_currentPage];
       _heights = _prepareHeights();
 
