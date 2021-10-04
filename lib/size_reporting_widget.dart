@@ -41,7 +41,8 @@ class _SizeReportingWidgetState extends State<SizeReportingWidget> {
     final size = context?.size;
     if (_oldSize != size) {
       _oldSize = size;
-      widget.onSizeChange(size);
     }
+
+    widget.onSizeChange(size);
   }
 }
